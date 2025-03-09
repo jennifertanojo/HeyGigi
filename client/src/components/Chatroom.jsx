@@ -120,7 +120,7 @@ function Chatroom({ onClose, topic }) {
   const cleanText = (text) => {
     return text
         .replace(/(\*|_)+/g, "")
-        .replace(/^text\s+/i, "")
+        .replace(/^cleanedText\s+/i, "")
         .replace(/\n/g, " ")      // Remove newlines
         .replace(/\s+/g, " ")     // Replace multiple spaces with a single space
         .replace(/[\p{Emoji}]/gu, "")
