@@ -3,10 +3,19 @@
   font-family: 'Pixelify Sans', sans-serif;
   background-image: url('./images/Home.png');
   background-position: 100vh;
-  background-size: fit;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   height: 100vh;
 }
 
-               
+button{
+  border-style:outset;
+  background-color: #FF9AC0;
+  border-color: #FF9AC0;
+  border-top-color: #ffc8dd;
+  border-left-color: #ffc8dd;
+
+  font-family: 'Pixelify Sans', sans-serif;
+
+}
