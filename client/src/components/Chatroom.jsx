@@ -5,7 +5,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import Window from "./Window";
 import Send from "../images/Send.png";
 import File from "../images/File.png";
-import pdfToText from 'react-pdftotext'
+import pdfToText from "react-pdftotext";
 import ReactMarkdown from "react-markdown";
 
 function Chatroom({ onClose, topic }) {
@@ -13,7 +13,7 @@ function Chatroom({ onClose, topic }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [fileText, setFileText] = useState("")
+  const [fileText, setFileText] = useState("");
 
   const genAI = new GoogleGenerativeAI(process.env.REACT_APP_API_KEY);
   const model = genAI.getGenerativeModel({
@@ -24,50 +24,52 @@ function Chatroom({ onClose, topic }) {
 
   const handleFileChange = (e) => {
     console.log("IM HERE!!!");
-    const file = e.target.files[0]
+    const file = e.target.files[0];
     setSelectedFile(file);
     pdfToText(file)
-        .then(text => {
-            setFileText(text);
-            console.log("fileText: ", fileText);
-        })
-        .catch(error => console.error("Failed to extract text from pdf"))
+      .then((text) => {
+        setFileText(text);
+        console.log("fileText: ", fileText);
+      })
+      .catch((error) => console.error("Failed to extract text from pdf"));
   };
 
   const sendMessage = async () => {
-     if (!userMessage.trim()) return;
+    if (!userMessage.trim()) return;
 
-        let contentToSend = "";
+    let contentToSend = "";
 
-        chatHistory.forEach((msg) => {
-            contentToSend += `${msg.sender === "user" ? "User" : "Bot"}: ${msg.text}\n`;
-        });
+    chatHistory.forEach((msg) => {
+      contentToSend += `${msg.sender === "user" ? "User" : "Bot"}: ${
+        msg.text
+      }\n`;
+    });
 
-        contentToSend += `User: ${userMessage}\n`;
+    contentToSend += `User: ${userMessage}\n`;
 
-        const newMessages = [...chatHistory, { sender: "user", text: userMessage }];
-        console.log(newMessages);
-        setChatHistory(newMessages);
-        setUserMessage("");
+    const newMessages = [...chatHistory, { sender: "user", text: userMessage }];
+    console.log(newMessages);
+    setChatHistory(newMessages);
+    setUserMessage("");
 
-        setIsLoading(true);
+    setIsLoading(true);
 
     try {
-        let fileResponseText = "";
- 
-        if (selectedFile) {
-            contentToSend += `\n\nFile Content: ${fileText}`;
-            // setSelectedFile(null);
-        }
+      let fileResponseText = "";
 
-        console.log("File: ", selectedFile);
-        console.log("File text: ", fileText);
+      if (selectedFile) {
+        contentToSend += `\n\nFile Content: ${fileText}`;
+        // setSelectedFile(null);
+      }
 
-        console.log("Content to send: ", contentToSend);
-        const result = await model.generateContent(contentToSend);
-        const response = await result.response;
-        console.log(response.text());
-      
+      console.log("File: ", selectedFile);
+      console.log("File text: ", fileText);
+
+      console.log("Content to send: ", contentToSend);
+      const result = await model.generateContent(contentToSend);
+      const response = await result.response;
+      console.log(response.text());
+
       setChatHistory([
         ...newMessages,
         { sender: "bot", text: response.text() },
@@ -82,14 +84,17 @@ function Chatroom({ onClose, topic }) {
   return (
     <div className="Chatroom">
       <Window onClose={onClose} HeaderTitle={topic.name}>
-           <input className="upload" type="file" accept=".pdf" onChange={handleFileChange} />
-
         <div className="ChatroomArea">
           <div className="messages">
             {chatHistory.map((msg, index) => (
-             <div key={index} className={msg.sender === "user" ? "user-message" : "ai-message"}>
-            <ReactMarkdown>{msg.text}</ReactMarkdown>
-            </div>
+              <div
+                key={index}
+                className={
+                  msg.sender === "user" ? "user-message" : "ai-message"
+                }
+              >
+                <ReactMarkdown>{msg.text}</ReactMarkdown>
+              </div>
             ))}
           </div>
 
@@ -100,17 +105,21 @@ function Chatroom({ onClose, topic }) {
               onChange={(e) => setUserMessage(e.target.value)}
               placeholder="Type a message..."
             />
-
-            <img
-              src={File}
-              alt="Upload File"
-              //   onClick={sendMessage}
-              style={{
-                cursor: isLoading ? "Sending..." : "Send",
-                height: "50px",
-              }}
-              disabled={isLoading}
+            <input
+              id="fileInput"
+              className="upload"
+              type="file"
+              accept=".pdf"
+              onChange={handleFileChange}
+              style={{ display: "none" }} // Hides the default input
             />
+            <label htmlFor="fileInput">
+              <img
+                src={File}
+                alt="Upload PDF"
+                style={{ cursor: "pointer", width: "50px", height: "50px" }}
+              />
+            </label>
             <img
               src={Send}
               alt="Send"
@@ -126,7 +135,6 @@ function Chatroom({ onClose, topic }) {
       </Window>
     </div>
   );
-
 }
 
 export default Chatroom;
