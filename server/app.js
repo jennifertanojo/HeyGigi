@@ -2,6 +2,7 @@
 // // import modules
 const express = require("express");
 // const { json, urlencoded } = express;
+const axios = require("axios");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -24,13 +25,60 @@ mongoose
 app.use(morgan("dev"));
 // app.use(json());
 // app.use(urlencoded({ extended: false }));
+app.use(express.json());
 app.use(cors({
-    origin: "http://localhost:3000",  // or "*" to allow all origins (less secure)
-    credentials: true,                // if you're using cookies or authentication
+    origin: "*",  // or "*" to allow all origins (less secure)
+    credentials: false,                // if you're using cookies or authentication
   }));
+
+app.get("/hello", (req, res) => {
+	res.send("Hello from Express!");
+}
+);
+
 // routes
 const testRoutes = require("./routes/test");
 app.use("/", testRoutes);
+app.post("/tts", async (req, res) => {
+	try {
+		const text = JSON.stringify(req.body);
+		if (text.length == 0) {
+			res.sendStatus(400);
+		}
+		console.log("Text: ", text);
+	const apiKey = process.env.TTS_API_KEY;
+	const endpoint = `https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=${apiKey}`;
+	const payload = {
+		"audioConfig": {
+		  "audioEncoding": "MP3",
+		  "effectsProfileId": [
+			"small-bluetooth-speaker-class-device"
+		  ],
+		  "pitch": 0,
+		  "speakingRate": 1
+		},
+		"input": {
+		  "text": text
+		},
+		"voice": {
+		  "languageCode": "en-US",
+		  "name": "en-US-Chirp-HD-F"
+		}
+	  };
+
+	  
+
+	  const response = await axios.post(endpoint, payload);
+	  res.json(response.data);
+	// console.log("Request body: ", req.body);
+	// res.sendStatus(200);
+	} catch(error) {
+		res.sendStatus(500);
+		console.log("Error: ", error.toString());
+	}
+	
+
+});
 
 // port
 const port = process.env.PORT || 8080;
