@@ -3,6 +3,8 @@ import "./style/Chatroom.css";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Window from "./Window";
+import Send from "../images/Send.png";
+import File from "../images/File.png";
 import pdfToText from 'react-pdftotext'
 import ReactMarkdown from "react-markdown";
 
@@ -80,25 +82,51 @@ function Chatroom({ onClose, topic }) {
   return (
     <div className="Chatroom">
       <Window onClose={onClose} HeaderTitle={topic.name}>
-        <h1>{topic.name}</h1>
-        <input className="upload" type="file" accept=".pdf" onChange={handleFileChange} />
+           <input className="upload" type="file" accept=".pdf" onChange={handleFileChange} />
 
-        <div className="messages">
-          {chatHistory.map((msg, index) => (
-            <div key={index} className={msg.sender === "user" ? "user-message" : "ai-message"}>
+        <div className="ChatroomArea">
+          <div className="messages">
+            {chatHistory.map((msg, index) => (
+             <div key={index} className={msg.sender === "user" ? "user-message" : "ai-message"}>
             <ReactMarkdown>{msg.text}</ReactMarkdown>
             </div>
+            ))}
+          </div>
 
+          <div className="MessageBar">
             <textarea
-                value={userMessage}
-                onChange={(e) => setUserMessage(e.target.value)}
-                placeholder="Type a message..."
+              className="UserMessage"
+              value={userMessage}
+              onChange={(e) => setUserMessage(e.target.value)}
+              placeholder="Type a message..."
             />
-            <button onClick={sendMessage} disabled={isLoading}>
-                {isLoading ? "Sending..." : "Send"}
-            </button>
+
+            <img
+              src={File}
+              alt="Upload File"
+              //   onClick={sendMessage}
+              style={{
+                cursor: isLoading ? "Sending..." : "Send",
+                height: "50px",
+              }}
+              disabled={isLoading}
+            />
+            <img
+              src={Send}
+              alt="Send"
+              onClick={sendMessage}
+              style={{
+                cursor: isLoading ? "Sending..." : "Send",
+                height: "30px",
+              }}
+              disabled={isLoading}
+            />
+          </div>
         </div>
-    );
+      </Window>
+    </div>
+  );
+
 }
 
 export default Chatroom;

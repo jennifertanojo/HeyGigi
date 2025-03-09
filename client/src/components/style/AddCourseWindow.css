@@ -10,6 +10,11 @@
     align-items: center;
 }
 
+.AddCourseWindow {
+    width: 422px;
+    height: 400px;
+}
+
 .CourseAndLogo {
     display: flex;
     flex-direction: row;
