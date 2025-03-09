@@ -20,4 +20,7 @@ Here’s how we do it:
 
 With  **Hey Gigi!**, we’re making gossip useful—turning everyday conversation into a powerful tool for learning, growth, and success.
 
+## Figma Prototype
+https://www.figma.com/proto/xczYNgkrxPk8VmoiqHcFOc/cmd-f-prototype?node-id=25-225&t=BytG6mDtaPWaG7DK-1
+
 # @ cmd-f 2025
