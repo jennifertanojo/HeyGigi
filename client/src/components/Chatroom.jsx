@@ -32,7 +32,7 @@ function Chatroom({ onClose, topic }) {
     });
 
   const [isCalling, setIsCalling] = useState(false);
-  const [isVoiceCall, setIsVoiceCall] = useState(false);
+//   const [isVoiceCall, setIsVoiceCall] = useState(false);
 
     // Speech-to-Text Function
     const startListening = async () => {
@@ -59,7 +59,7 @@ function Chatroom({ onClose, topic }) {
         // }
     };
 
-    const interruptListening = () => {
+    const handleInterrupt = () => {
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
         recognition.lang = "en-US";
         recognition.continuous = false;
@@ -107,6 +107,9 @@ function Chatroom({ onClose, topic }) {
         ]);
         const audioSrc = `data:audio/mp3;base64,${response.data.audioContent}`;
         setAudioSrc(audioSrc);
+
+        setIsCalling(false);
+
     };
 
 
@@ -151,12 +154,17 @@ function Chatroom({ onClose, topic }) {
     setUserMessage("");
 
    try {
+        let result;
             if (selectedFile) {
                 contentToSend += `\n\nFile Content: ${fileText}`;
+                result = await model.generateContent(contentToSend);
+
                 // setSelectedFile(null);
+            } else {
+                result = await model.generateContent(message);
             }
 
-            const result = await model.generateContent(message);
+            // result = await model.generateContent(message);
             const response = result.response;
             const ttsResult = response.text();
 
