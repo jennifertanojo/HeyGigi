@@ -10,6 +10,8 @@ import pdfToText from "react-pdftotext";
 import ReactMarkdown from "react-markdown";
 import Phone from "../images/Phone.png";
 import GigiCall from "../images/GigiCall.png";
+import axios from "axios";
+
 
 function Chatroom({ onClose, topic }) {
   const [userMessage, setUserMessage] = useState("");
@@ -18,6 +20,11 @@ function Chatroom({ onClose, topic }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileText, setFileText] = useState("");
   const [isCallingGigi, setIsCallingGigi] = useState(false);
+   const [text, setText] = useState("");
+    const [audioSrc, setAudioSrc] = useState(null);
+    const [calling, setCalling] = useState(false);
+    const [isVoiceCall, setIsVoiceCall] = useState(false);
+
 
   const genAI = new GoogleGenerativeAI(process.env.REACT_APP_API_KEY);
   const model = genAI.getGenerativeModel({
@@ -47,24 +54,25 @@ function Chatroom({ onClose, topic }) {
     recognition.start();
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setSelectedFile(file);
+ const handleFileChange = (e) => {
+        console.log("IM HERE!!!");
+        const file = e.target.files[0];
+        setSelectedFile(file);
+        pdfToText(file)
+            .then((text) => {
+                setFileText(text);
+                console.log("fileText: ", fileText);
+            })
+            .catch((error) => console.error("Failed to extract text from pdf"));
+    };
 
-    pdfToText(file)
-      .then((text) => {
-        setFileText(text);
-        setChatHistory((prevChat) => [
-          ...prevChat,
-          {
-            sender: "user",
-            text: `📂 Uploaded file: ${file.name}`,
-            fileName: file.name,
-          },
-        ]);
-      })
-      .catch((error) => console.error("Failed to extract text from pdf", error));
-  };
+    const handleSynthesize = async () => {
+        const response = await axios.post('http://localhost:8080/tts', {
+            "text": text,
+        });
+        const audioSrc = `data:audio/mp3;base64,${response.data.audioContent}`;
+        setAudioSrc(audioSrc);
+    };
 
   const callGigi = () => {
     setIsCallingGigi((prev) => !prev);
@@ -84,22 +92,79 @@ function Chatroom({ onClose, topic }) {
     setUserMessage("");
     setIsLoading(true);
 
-    try {
-      if (selectedFile) {
-        contentToSend += `\n\nFile Content: ${fileText}`;
-      }
+   try {
+            let fileResponseText = "";
 
-      console.log("Sending content to Gemini:", contentToSend);
-      const result = await model.generateContent(contentToSend);
-      const response = await result.response;
+            if (selectedFile) {
+                contentToSend += `\n\nFile Content: ${fileText}`;
+                // setSelectedFile(null);
+            }
 
-      setChatHistory([...newMessages, { sender: "bot", text: response.text() }]);
+            console.log("File: ", selectedFile);
+            console.log("File text: ", fileText);
+
+            console.log("Content to send: ", contentToSend);
+            const result = await model.generateContent(contentToSend);
+            const response = await result.response;
+            console.log(response.text());
+            setText(response.text());
+
+            setChatHistory([
+                ...newMessages,
+                { sender: "bot", text: response.text() },
+            ]);
+
+            setChatHistory((prevMessages) => [
+                ...prevMessages,
+                {
+                    sender: "bot",
+                    text: "Would you like to continue chatting or start a call?",
+                    options: ["Continue chatting", "Start a call"]
+                }
+            ]);
     } catch (error) {
       console.error("Error communicating with Gigi", error);
     } finally {
       setIsLoading(false);
     }
   };
+  
+   const handleOptionClick = (option) => {
+        if (option === "Start a call") {
+            startVoiceCall();
+        } else if (option === "Continue chatting") {
+            continueChatting();
+        }
+    };
+
+    const startVoiceCall = () => {
+        setIsVoiceCall(true);
+        setChatHistory([
+            ...chatHistory,
+            { sender: "bot", text: "Starting voice chat..." }
+        ]);
+
+        const speech = new SpeechSynthesisUtterance("Let's start the call!");
+        speech.lang = "en-US";
+        window.speechSynthesis.speak(speech);
+
+        setChatHistory(prevMessages => [
+            ...prevMessages,
+            {
+                sender: "bot",
+                text: "The call has started, let's chat!",
+                options: ["Starting a call"]
+            }
+        ]);
+    };
+
+    const continueChatting = () => {
+        setIsVoiceCall(false);
+        setChatHistory([
+            ...chatHistory,
+            { sender: "bot", text: "Okay, let's continue chatting!" }
+        ]);
+    };
 
   return (
     <div className="Chatroom">
@@ -187,6 +252,15 @@ function Chatroom({ onClose, topic }) {
                 disabled={isLoading}
               />
             </div>
+            <div className="voice-call-container">
+                        <button onClick={handleSynthesize}>
+                            Call
+                        </button>
+                        <button onClick={continueChatting}>
+                            Continue Chatting
+                        </button>
+                    </div>
+                    {audioSrc && <audio controls src={audioSrc} />}
           </div>
         )}
       </Window>
@@ -195,3 +269,7 @@ function Chatroom({ onClose, topic }) {
 }
 
 export default Chatroom;
+
+
+
+
