@@ -39,9 +39,11 @@ function App() {
   return (
     <div className="App">
       <div id="AppHeader">
-        <img id="gigiImg" src={Gigi} alt="Gigi"></img>
-        <p id="heyGigi">Hey Gigi!</p>
-        <img id="buttonsImg" src={buttons} alt="buttons"></img>
+        <div id="headerLeft">
+          <img id="gigiImg" src={Gigi} alt="Gigi" />
+          <p id="heyGigi">Hey Gigi!</p>
+        </div>
+        <img id="buttonsImg" src={buttons} alt="buttons" />
       </div>
       <div id="sidebar">
         {topics.map((topic) => (
