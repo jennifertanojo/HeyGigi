@@ -39,7 +39,6 @@ function App() {
       </div>
       {isAddWindowOpen && <AddCourseWindow onClose={closeAddWindow} onAddCourse={addCourse} />}
       {isChatroomOpen && <Chatroom onClose={closeChatroomw} topic={selectedTopic} />}
-      {isChatroomOpen && <button className="upload"></button>}
     </div>
   );
 }
