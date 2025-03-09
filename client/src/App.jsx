@@ -10,11 +10,11 @@ function App() {
   const [isAddWindowOpen, setIsAddWindowOpen] = useState(false);
   const [topics, setTopics] = useState([]);  // Renamed setTopic to setTopics for consistency
   const [isChatroomOpen, setIsChatroomOpen] = useState(false);
-  const [selectedTopic, setSelectedTopic] = useState(null); 
+  const [selectedTopic, setSelectedTopic] = useState(null);
 
   const openAddWindow = () => setIsAddWindowOpen(true);
   const closeAddWindow = () => setIsAddWindowOpen(false);
-  
+
   const openChatroom = (topic) => {
     setSelectedTopic(topic);
     setIsChatroomOpen(true);
@@ -24,7 +24,7 @@ function App() {
 
   const addCourse = (topicName) => {
     const newTopic = { id: Date.now(), name: topicName };
-    setTopics([...topics, newTopic]); 
+    setTopics([...topics, newTopic]);
     closeAddWindow();
     openChatroom(newTopic);
   };
@@ -39,6 +39,7 @@ function App() {
       </div>
       {isAddWindowOpen && <AddCourseWindow onClose={closeAddWindow} onAddCourse={addCourse} />}
       {isChatroomOpen && <Chatroom onClose={closeChatroomw} topic={selectedTopic} />}
+      {isChatroomOpen && <button className="upload"></button>}
     </div>
   );
 }
