@@ -10,8 +10,8 @@ import pdfToText from "react-pdftotext";
 import ReactMarkdown from "react-markdown";
 import Phone from "../images/Phone.png";
 import GigiCall from "../images/GigiCall.png";
+import NOKIA from "../images/NOKIa.mp3";
 import axios from "axios";
-
 
 function Chatroom({ onClose, topic }) {
     const [userMessage, setUserMessage] = useState("");
@@ -31,6 +31,9 @@ function Chatroom({ onClose, topic }) {
         "Your name is Gigi. You should explain stuff like you're my best friend and we're gossiping.  Don't add anything that makes it seem like a script",
     });
 
+  const [isCalling, setIsCalling] = useState(false);
+  const [isVoiceCall, setIsVoiceCall] = useState(false);
+
     // Speech-to-Text Function
     const startListening = async () => {
         const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
@@ -48,6 +51,7 @@ function Chatroom({ onClose, topic }) {
         recognition.onerror = (event) => {
             console.error("Speech recognition error:", event.error);
         };
+
 
         recognition.start();
 
@@ -89,10 +93,10 @@ function Chatroom({ onClose, topic }) {
 
     const handleSynthesize = async () => {
         setIsCallingGigi((prev) => !prev);
+      const cleanedText = cleanText(text); // If further cleaning is required
 
-        const response = await axios.post('http://localhost:8080/tts', {
-        "text": text,
-        });
+      const response = await axios.post("http://localhost:8080/tts", { cleanedText });
+     
         setChatHistory((prevMessages) => [
             ...prevMessages,
             {
@@ -104,6 +108,28 @@ function Chatroom({ onClose, topic }) {
         const audioSrc = `data:audio/mp3;base64,${response.data.audioContent}`;
         setAudioSrc(audioSrc);
     };
+
+
+  // Helper function to clean up the text (if needed)
+  const cleanText = (text) => {
+    return text
+        .replace(/(\*|_)+/g, "")
+        .replace(/^cleanedText\s+/i, "")
+        .replace(/\n/g, " ")      // Remove newlines
+        .replace(/\s+/g, " ")     // Replace multiple spaces with a single space
+        .replace(/[\u{1F600}-\u{1F64F}]/gu, "") // Remove common emojis
+        .replace(/[\u{1F300}-\u{1F5FF}]/gu, "") // Remove symbols & pictographs
+        .replace(/[\u{1F680}-\u{1F6FF}]/gu, "") // Remove transport & map symbols
+        .replace(/[\u{2600}-\u{26FF}]/gu, "")   // Remove miscellaneous symbols
+        .replace(/[\u{2700}-\u{27BF}]/gu, "")   // Remove dingbats
+        .toLowerCase() 
+        .trim();                 // Trim leading and trailing spaces
+    };
+
+  const handlePhone = () => {
+    setIsCalling(true);
+    handleSynthesize();
+  };
 
   const callGigi = () => {
     setIsCallingGigi((prev) => !prev);
@@ -165,44 +191,57 @@ function Chatroom({ onClose, topic }) {
                     options: ["Continue chatting", "Start a call"]
                 }
             ]);
+
     } catch (error) {
       console.error("Error communicating with Gigi", error);
     } finally {
       setIsLoading(false);
     }
   };
-  
 
   return (
     <div className="Chatroom">
       <Window onClose={onClose} HeaderTitle={topic.name}>
         {isCallingGigi ? (
-          <div className="CallArea">
-            <img src={GigiCall} alt="Calling Gigi" />
-            <div className="CallButtons">
-              <button style={{ fontSize: "18px" }} onClick={interruptListening}>Interrupt</button>
-              <button
-                style={{
-                  fontSize: "18px",
-                  backgroundColor: "#FF7AAA",
-                  color: "white",
-                }}
-                onClick={callGigi}>
-                Hang Up
-              </button>
-            </div>
-            {audioSrc && <audio ref={audioRef}  key={audioSrc} autoPlay controls>
-                <source src={audioSrc} type='audio/mpeg'/>
-                </audio>}
 
-          </div>
+          isCalling || !audioSrc ? ( // Show loading if fetching audio
+            <div className="LoadingPage">
+              <img src={GigiCall}></img>
+              <div>Calling Gigi...</div>
+              <audio autoPlay loop>
+                <source src={NOKIA} type="audio/mp3" />
+              </audio>
+            </div>
+          ) : (
+            <div className="CallArea">
+              <img src={GigiCall} alt="Calling Gigi" />
+              <div className="CallButtons">
+                <button style={{ fontSize: "18px" }} onClick={handleInterrupt}>
+                  Interrupt
+                </button>
+                <button
+                  style={{
+                    fontSize: "18px",
+                    backgroundColor: "#FF7AAA",
+                    color: "white",
+                  }}
+                  onClick={callGigi}
+                >
+                  Hang Up
+                </button>
+                {audioSrc && <audio autoPlay controls src={audioSrc} />}
+              </div>
+            </div>
+          )
         ) : (
           <div className="ChatroomArea">
             <div className="messages">
               {chatHistory.map((msg, index) => (
                 <div
                   key={index}
-                  className={msg.sender === "user" ? "user-message" : "ai-message"}
+                  className={
+                    msg.sender === "user" ? "user-message" : "ai-message"
+                  }
                 >
                   <ReactMarkdown>{msg.text}</ReactMarkdown>
                 </div>
@@ -213,8 +252,7 @@ function Chatroom({ onClose, topic }) {
               <img
                 src={Phone}
                 alt="Call Gigi"
-                onClick={handleSynthesize}
-            
+                onClick={handlePhone}
                 style={{
                   cursor: "pointer",
                   height: "50px",
@@ -271,7 +309,3 @@ function Chatroom({ onClose, topic }) {
 }
 
 export default Chatroom;
-
-
-
-
