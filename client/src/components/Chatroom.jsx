@@ -67,9 +67,19 @@ function Chatroom({ onClose, topic }) {
     };
 
     const handleSynthesize = async () => {
+        setIsCallingGigi((prev) => !prev);
+
         const response = await axios.post('http://localhost:8080/tts', {
             "text": text,
         });
+        setChatHistory((prevMessages) => [
+            ...prevMessages,
+            {
+                sender: "bot",
+                text: "Starting a call...",
+                options: []
+            }
+        ]);
         const audioSrc = `data:audio/mp3;base64,${response.data.audioContent}`;
         setAudioSrc(audioSrc);
     };
@@ -173,17 +183,19 @@ function Chatroom({ onClose, topic }) {
           <div className="CallArea">
             <img src={GigiCall} alt="Calling Gigi" />
             <div className="CallButtons">
-              <button style={{ fontSize: "18px" }}>Interrupt</button>
+              <button style={{ fontSize: "18px" }} onClick={startListening}>Interrupt</button>
               <button
                 style={{
                   fontSize: "18px",
                   backgroundColor: "#FF7AAA",
                   color: "white",
                 }}
-                onClick={callGigi}
+                onClick={handleSynthesize}
               >
                 Hang Up
               </button>
+              {audioSrc && <audio autoplay controls src={audioSrc} />}
+
             </div>
           </div>
         ) : (
@@ -204,6 +216,7 @@ function Chatroom({ onClose, topic }) {
                 src={Phone}
                 alt="Call Gigi"
                 onClick={callGigi}
+            
                 style={{
                   cursor: "pointer",
                   height: "50px",
@@ -252,15 +265,6 @@ function Chatroom({ onClose, topic }) {
                 disabled={isLoading}
               />
             </div>
-            <div className="voice-call-container">
-                        <button onClick={handleSynthesize}>
-                            Call
-                        </button>
-                        <button onClick={continueChatting}>
-                            Continue Chatting
-                        </button>
-                    </div>
-                    {audioSrc && <audio controls src={audioSrc} />}
           </div>
         )}
       </Window>
