@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./style/Chatroom.css";
+
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Window from "./Window";
 import pdfToText from 'react-pdftotext'
@@ -32,16 +33,22 @@ function Chatroom({ onClose, topic }) {
   };
 
   const sendMessage = async () => {
-    if (!userMessage.trim()) return;
+     if (!userMessage.trim()) return;
 
-    let contentToSend = userMessage;
-    console.log("User message: ", userMessage);
+        let contentToSend = "";
 
-    const newMessages = [...chatHistory, { sender: "user", text: userMessage }];
-    setChatHistory(newMessages);
-    setUserMessage("");
+        chatHistory.forEach((msg) => {
+            contentToSend += `${msg.sender === "user" ? "User" : "Bot"}: ${msg.text}\n`;
+        });
 
-    setIsLoading(true);
+        contentToSend += `User: ${userMessage}\n`;
+
+        const newMessages = [...chatHistory, { sender: "user", text: userMessage }];
+        console.log(newMessages);
+        setChatHistory(newMessages);
+        setUserMessage("");
+
+        setIsLoading(true);
 
     try {
         let fileResponseText = "";
@@ -81,20 +88,17 @@ function Chatroom({ onClose, topic }) {
             <div key={index} className={msg.sender === "user" ? "user-message" : "ai-message"}>
             <ReactMarkdown>{msg.text}</ReactMarkdown>
             </div>
-          ))}
-        </div>
 
-        <textarea
-          value={userMessage}
-          onChange={(e) => setUserMessage(e.target.value)}
-          placeholder="Type a message..."
-        />
-        <button onClick={sendMessage} disabled={isLoading}>
-          {isLoading ? "Sending..." : "Send"}
-        </button>
-      </Window>
-    </div>
-  );
+            <textarea
+                value={userMessage}
+                onChange={(e) => setUserMessage(e.target.value)}
+                placeholder="Type a message..."
+            />
+            <button onClick={sendMessage} disabled={isLoading}>
+                {isLoading ? "Sending..." : "Send"}
+            </button>
+        </div>
+    );
 }
 
 export default Chatroom;
