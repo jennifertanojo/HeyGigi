@@ -9,7 +9,7 @@ Welcome to **Hey Gigi!**, the web app designed to help you study and understand 
 - **Challenging complex concepts**: Difficult concepts can feel inaccessible without the right tools or support to break them down in an understandable, relatable way.
 
 ## The Solution
-**Hey Gigi!** transforms studying by tapping into the one thing that effortlessly holds our attention: gossip. We naturally stay engaged when chatting informally, so why not use that power to make learning easier, more fun, and actually useful in our lives?
+The inspiration for **Hey Gigi!** stems from the playful, "bestie" vibes of shows like *Gossip Girl*, aiming to create a friendly, approachable atmosphere, while incorporating a more studious and thoughtful atmosphere of shows like *Gilmore Girls*. We also realized how difficult it can be to stay engaged and study effectively, particularly for people with short attention spans or ADHD. Additionally, women and gender minorities in tech often face intimidation and insecurity when voicing their questions or concerns. Recognizing these challenges, we saw an opportunity to create a space where everyone can feel comfortable asking questions and engaging without fear of judgment. Thus, "Hey Gigi!" was born — the perfect solution to bridge these gaps.
 
 Here’s how we do it:
 
