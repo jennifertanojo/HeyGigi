@@ -7,6 +7,8 @@ import Send from "../images/Send.png";
 import File from "../images/File.png";
 import pdfToText from "react-pdftotext";
 import ReactMarkdown from "react-markdown";
+import Phone from "../images/Phone.png";
+import GigiCall from "../images/GigiCall.png";
 
 function Chatroom({ onClose, topic }) {
   const [userMessage, setUserMessage] = useState("");
@@ -14,6 +16,7 @@ function Chatroom({ onClose, topic }) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileText, setFileText] = useState("");
+  const [isCallingGigi, setIsCallingGigi] = useState(false);
 
   const genAI = new GoogleGenerativeAI(process.env.REACT_APP_API_KEY);
   const model = genAI.getGenerativeModel({
@@ -41,6 +44,14 @@ function Chatroom({ onClose, topic }) {
       .catch((error) =>
         console.error("Failed to extract text from pdf", error)
       );
+  };
+
+  const callGigi = () => {
+    if (!isCallingGigi) {
+      setIsCallingGigi(true);
+    } else {
+      setIsCallingGigi(false);
+    }
   };
 
   const sendMessage = async () => {
@@ -92,54 +103,83 @@ function Chatroom({ onClose, topic }) {
   return (
     <div className="Chatroom">
       <Window onClose={onClose} HeaderTitle={topic.name}>
-        <div className="ChatroomArea">
-          <div className="messages">
-            {chatHistory.map((msg, index) => (
-              <div
-                key={index}
-                className={
-                  msg.sender === "user" ? "user-message" : "ai-message"
-                }
+        {isCallingGigi ? (
+          <div className="CallArea">
+            <img src={GigiCall} />
+            <div className="CallButtons">
+              <button style={{ fontSize: "18px" }}>Interrupt</button>
+              <button
+                style={{
+                  fontSize: "18px",
+                  backgroundColor: "#FF7AAA",
+                  color: "white",
+                }}
+                onClick={callGigi}
               >
-                <ReactMarkdown>{msg.text}</ReactMarkdown>
-              </div>
-            ))}
+                Hang Up
+              </button>
+            </div>
           </div>
+        ) : (
+          <div className="ChatroomArea">
+            <div className="messages">
+              {chatHistory.map((msg, index) => (
+                <div
+                  key={index}
+                  className={
+                    msg.sender === "user" ? "user-message" : "ai-message"
+                  }
+                >
+                  <ReactMarkdown>{msg.text}</ReactMarkdown>
+                </div>
+              ))}
+            </div>
 
-          <div className="MessageBar">
-            <textarea
-              className="UserMessage"
-              value={userMessage}
-              onChange={(e) => setUserMessage(e.target.value)}
-              placeholder="Type a message..."
-            />
-            <input
-              id="fileInput"
-              className="upload"
-              type="file"
-              accept=".pdf"
-              onChange={handleFileChange}
-              style={{ display: "none" }} // Hides the default input
-            />
-            <label htmlFor="fileInput">
+            <div className="MessageBar">
               <img
-                src={File}
-                alt="Upload PDF"
-                style={{ cursor: "pointer", width: "50px", height: "50px" }}
+                src={Phone}
+                alt="Call Gigi"
+                onClick={callGigi}
+                style={{
+                  cursor: "pointer",
+                  height: "50px",
+                }}
+                disabled={isLoading}
               />
-            </label>
-            <img
-              src={Send}
-              alt="Send"
-              onClick={sendMessage}
-              style={{
-                cursor: isLoading ? "Sending..." : "Send",
-                height: "30px",
-              }}
-              disabled={isLoading}
-            />
+              <textarea
+                className="UserMessage"
+                value={userMessage}
+                onChange={(e) => setUserMessage(e.target.value)}
+                placeholder="Type a message..."
+              />
+              <input
+                id="fileInput"
+                className="upload"
+                type="file"
+                accept=".pdf"
+                onChange={handleFileChange}
+                style={{ display: "none" }} // Hides the default input
+              />
+              <label htmlFor="fileInput">
+                <img
+                  src={File}
+                  alt="Upload PDF"
+                  style={{ cursor: "pointer", width: "50px", height: "50px" }}
+                />
+              </label>
+              <img
+                src={Send}
+                alt="Send"
+                onClick={sendMessage}
+                style={{
+                  cursor: "pointer",
+                  height: "30px",
+                }}
+                disabled={isLoading}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </Window>
     </div>
   );

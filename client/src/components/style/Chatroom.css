@@ -103,3 +103,19 @@ width: 100%;
     height: 100%;
 }
 
+.CallArea {
+    background-color: #FFC8DD;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.CallButtons {
+    display: flex;
+    gap: 20px;
+    padding-right: 50px;
+}
+
