@@ -27,14 +27,22 @@
 
 #gigiImg {
   margin-top: -5px;
-  height: 100%;
-  margin-right: 8px; 
+  height: 45px;
+  width: auto;
+  margin-right: 8px; /* Spacing between image and text */
 }
 
 #heyGigi {
   color: white;
   font-size: 26px;
-  margin-left: -1420px; 
+  margin-left: 10px; /* Small space between image and text */
+  white-space: nowrap;
+  width: auto;
+}
+
+#headerLeft {
+  display: flex;
+  align-items: center;
 }
 
 #AppFooter {
