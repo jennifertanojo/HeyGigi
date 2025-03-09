@@ -71,6 +71,15 @@ button{
   border-top-color: #ffc8dd;
   border-left-color: #ffc8dd;
   font-family: 'Pixelify Sans', sans-serif;
+  cursor: './images/Pointer.png', auto;
+}
+
+button:hover {
+  cursor: './images/Pointer.png', auto; /* Update with your actual image path */
+}
+button:active{
+  background-color: #ff9cc0;
+  color: white;
 }
 
 #sidebar {
