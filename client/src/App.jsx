@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Sidebar from "./components/Sidebar";
-import AddCourseWindow from "./components/AddCourseWindow"; // Import Modal component
+import AddCourseWindow from "./components/AddCourseWindow"; 
 import Chatroom from "./components/Chatroom";
 import TopicFolder from "./components/TopicFolder";
 import Gigi from "./images/Gigi.png"; 
@@ -12,12 +11,11 @@ import './App.css';
 
 function App() {
   const [isAddWindowOpen, setIsAddWindowOpen] = useState(false);
-  const [topics, setTopics] = useState([]);  // Renamed setTopic to setTopics for consistency
+  const [topics, setTopics] = useState([]); 
   const [isChatroomOpen, setIsChatroomOpen] = useState(false);
   const [selectedTopic, setSelectedTopic] = useState(null); 
 
   const openAddWindow = () => {
-    // Close the chatroom if it's open
     setIsChatroomOpen(false);
     setIsAddWindowOpen(true);
   };

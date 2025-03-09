@@ -63,3 +63,25 @@ button{
   border-left-color: #ffc8dd;
   font-family: 'Pixelify Sans', sans-serif;
 }
+
+#sidebar {
+  background-color: pink;
+  height: 100%;
+  width: 14vw;
+  border-right: 3px solid #d89eb7;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: flex-start;
+  border: 1.5px solid black;
+  border-top: 0px;
+  border-left: 0px;
+  box-shadow: 5px 0 0 rgba(0, 0, 0, 0.3);
+  position: relative; 
+  bottom: 0;
+  left: 0;  
+  padding-top: 20px;
+  margin-top: 40px;
+  z-index: 1000;
+}
