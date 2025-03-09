@@ -72,6 +72,10 @@ button{
   border-left-color: #ffc8dd;
   font-family: 'Pixelify Sans', sans-serif;
 }
+button:active{
+  background-color: #ff9cc0;
+  color: white;
+}
 
 #sidebar {
   background-color: pink;

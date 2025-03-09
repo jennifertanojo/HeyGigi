@@ -64,7 +64,6 @@ function Chatroom({ onClose, topic }) {
     setIsLoading(true);
 
     try {
-      let fileResponseText = "";
 
       if (selectedFile) {
         contentToSend += `\n\nFile Content: ${fileText}`;
