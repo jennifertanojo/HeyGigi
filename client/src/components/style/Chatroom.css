@@ -69,6 +69,7 @@
     border-top-color: #FFC8DD;
     border-right-color: #FF7AAA;
     border-bottom-color: #FF7AAA;
+    resize: none;
 }
 
 .UserMessage:focus {
@@ -117,5 +118,15 @@ width: 100%;
     display: flex;
     gap: 20px;
     padding-right: 50px;
+}
+
+.LoadingPage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color:#FFC8DD;
+    width: 100%;
+    height: 100%;
 }
 
