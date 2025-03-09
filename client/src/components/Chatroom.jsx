@@ -28,7 +28,7 @@ function Chatroom({ onClose, topic }) {
       const result = await model.generateContent(userMessage);
       const response = await result.response;
       console.log(response.text());
-
+      
       setChatHistory([
         ...newMessages,
         { sender: "bot", text: response.text() },
