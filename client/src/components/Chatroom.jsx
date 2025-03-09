@@ -123,7 +123,11 @@ function Chatroom({ onClose, topic }) {
         .replace(/^cleanedText\s+/i, "")
         .replace(/\n/g, " ")      // Remove newlines
         .replace(/\s+/g, " ")     // Replace multiple spaces with a single space
-        .replace(/[\p{Emoji}]/gu, "")
+        .replace(/[\u{1F600}-\u{1F64F}]/gu, "") // Remove common emojis
+        .replace(/[\u{1F300}-\u{1F5FF}]/gu, "") // Remove symbols & pictographs
+        .replace(/[\u{1F680}-\u{1F6FF}]/gu, "") // Remove transport & map symbols
+        .replace(/[\u{2600}-\u{26FF}]/gu, "")   // Remove miscellaneous symbols
+        .replace(/[\u{2700}-\u{27BF}]/gu, "")   // Remove dingbats
         .toLowerCase() 
         .trim();                 // Trim leading and trailing spaces
     };
