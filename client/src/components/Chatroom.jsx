@@ -11,6 +11,7 @@ import ReactMarkdown from "react-markdown";
 import Phone from "../images/Phone.png";
 import GigiCall from "../images/GigiCall.png";
 import axios from "axios";
+import {marked} from "marked";
 
 
 function Chatroom({ onClose, topic }) {
@@ -68,10 +69,15 @@ function Chatroom({ onClose, topic }) {
 
     const handleSynthesize = async () => {
         setIsCallingGigi((prev) => !prev);
-
+    
+        // Clean up the plain text (optional)
+        const cleanedText = cleanText(text); // If further cleaning is required
+    
+        // Send the cleaned text to the TTS API
         const response = await axios.post('http://localhost:8080/tts', {
-            "text": text,
+            "text": cleanedText,
         });
+        
         setChatHistory((prevMessages) => [
             ...prevMessages,
             {
@@ -80,8 +86,21 @@ function Chatroom({ onClose, topic }) {
                 options: []
             }
         ]);
+    
         const audioSrc = `data:audio/mp3;base64,${response.data.audioContent}`;
         setAudioSrc(audioSrc);
+    };
+    
+    // Helper function to clean up the text (if needed)
+    const cleanText = (text) => {
+        return text
+            .replace(/(\*|_)+/g, "")
+            .replace(/^text\s+/i, "")
+            .replace(/\n/g, " ")      // Remove newlines
+            .replace(/\s+/g, " ")     // Replace multiple spaces with a single space
+            .replace(/[\p{Emoji}]/gu, "")
+            .toLowerCase() 
+            .trim();                 // Trim leading and trailing spaces
     };
 
   const callGigi = () => {
