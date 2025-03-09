@@ -23,15 +23,24 @@ function Chatroom({ onClose, topic }) {
   });
 
   const handleFileChange = (e) => {
-    console.log("IM HERE!!!");
     const file = e.target.files[0];
     setSelectedFile(file);
+
     pdfToText(file)
       .then((text) => {
         setFileText(text);
-        console.log("fileText: ", fileText);
+        setChatHistory((prevChat) => [
+          ...prevChat,
+          {
+            sender: "user",
+            text: `📂 Uploaded file: ${file.name}`,
+            fileName: file.name, // Store file name
+          },
+        ]);
       })
-      .catch((error) => console.error("Failed to extract text from pdf"));
+      .catch((error) =>
+        console.error("Failed to extract text from pdf", error)
+      );
   };
 
   const sendMessage = async () => {
