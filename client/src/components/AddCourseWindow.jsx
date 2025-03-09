@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./style/AddCourseWindow.css";
-import Header from "./Header";
+import Window from "./Window";
 
 function AddCourseWindow({ onClose, onAddCourse }) {
   const [courseName, setCourseName] = useState("");
@@ -18,21 +18,23 @@ function AddCourseWindow({ onClose, onAddCourse }) {
   return (
     <div className="AddCourseBg">
       <div className="AddCourseWindow">
-        <Header onClose={onClose} HeaderTitle={"New Topic"} />
-
-        <form className="CourseCreationForm" onSubmit={handleSubmit}>
-          <label htmlFor="courseName">Title:</label>
-          <input
-            className="TopicTitleField"
-            placeholder="Enter a topic title"
-            type="text"
-            id="courseName"
-            value={courseName}
-            onChange={(e) => setCourseName(e.target.value)}
-            required
-          />
-          <button type="submit">Start a chat</button>
-        </form>
+        <Window onClose={onClose} HeaderTitle={"New Topic"}>
+          <form className="Form" onSubmit={handleSubmit}>
+            <label htmlFor="courseName">Title:</label>
+            <input
+              className="TopicTitleField"
+              placeholder="Enter a topic title"
+              type="text"
+              id="courseName"
+              value={courseName}
+              onChange={(e) => setCourseName(e.target.value)}
+              required
+            />
+            <button className="StartChatButton" type="submit">
+              Start a chat
+            </button>
+          </form>
+        </Window>
       </div>
     </div>
   );

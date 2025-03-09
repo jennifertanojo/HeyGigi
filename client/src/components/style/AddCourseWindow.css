@@ -10,38 +10,6 @@
     align-items: center;
 }
 
-.AddCourseWindow{
-    background-color: #C0C0C0;
-    display: flex;
-    flex-direction: column;
-    width: 496px;
-    height: 198px;
-    text-align: center;
-    height: 50%;
-    border-style: solid;
-    border-width: 3px;
-    border-left-color: white;
-    border-right-color: black;
-    border-top-color: white;
-    border-bottom-color: black;
-    padding: 3px;
-}
-
-.CourseWindowHeadline{
-    background-color: #FF7AAA;
-    display: flex;
-    align-items: center;
-    height: 39px;
-    padding: 0px;
-    margin: 0px;
-    border-width: 2px;
-    border-style: solid;
-    border-color: black;
-    padding-left: 5px;
-    padding-right: 5px;
-    justify-content: space-between;
-}
-
 .CourseAndLogo {
     display: flex;
     flex-direction: row;
@@ -49,23 +17,6 @@
     justify-content: center;
     align-items: center;
     gap: 7px;
-}
-
-.CourseCreationForm {
-    height: 100%;
-    width: auto;
-    background-color: white;
-    margin-top: 3px;
-    border-width: 2px;
-    border-style: solid;
-    border-color: black;
-    display: flex;
-    flex-direction: column;
-    padding-left: 50px;
-    padding-right: 50px;
-    padding-top: 75px;
-    align-items: center;
-    gap: 20px;
 }
 
 .TopicTitleField {
@@ -88,4 +39,17 @@
     border-top-color: #FF1493;
     border-right-color: #FF69B4;
     border-bottom-color: #FF69B4;
+}
+
+.Form {
+    display: flex;
+    flex-direction: column;
+    padding-top: 75px;
+    padding-bottom: 75px;
+    gap: 30px;
+    align-items: center;
+}
+
+.StartChatButton {
+    width: 122px;
 }
