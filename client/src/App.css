@@ -7,6 +7,52 @@
   background-position: center;
   background-repeat: no-repeat;
   height: 100vh;
+  position: relative; 
+  overflow: hidden;
+}
+
+#AppHeader {
+  height: 40px;
+  background-color: #FF7AAA;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  position: absolute; 
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+#gigiImg {
+  margin-top: -5px;
+  height: 100%;
+  margin-right: 8px; 
+}
+
+#heyGigi {
+  color: white;
+  font-size: 26px;
+  margin-left: -1420px; 
+}
+
+#AppFooter {
+  height: 30px;
+  background-color: #FFC8DD;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  position: absolute; 
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+#buttonsImg{
+  padding-right: 20px;
 }
 
 button{
@@ -15,7 +61,5 @@ button{
   border-color: #FF9AC0;
   border-top-color: #ffc8dd;
   border-left-color: #ffc8dd;
-
   font-family: 'Pixelify Sans', sans-serif;
-
 }

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./style/Chatroom.css";
-import { GoogleGenerativeAI } from "@google/generative-ai"; // Keep the Google Generative AI import
+import { GoogleGenerativeAI } from "@google/generative-ai"; 
 
 function Chatroom({ onClose, topic }) {
     const [userMessage, setUserMessage] = useState("");
@@ -33,7 +33,7 @@ function Chatroom({ onClose, topic }) {
                 { sender: "bot", text: response.text() }
             ]);
         } catch (error) {
-            console.error("Error communicating with AI", error);
+            console.error("Error communicating with Gigi", error);
         } finally {
             setIsLoading(false);
         }
@@ -47,7 +47,7 @@ function Chatroom({ onClose, topic }) {
             <div className="messages">
                 {chatHistory.map((msg, index) => (
                     <div key={index} className={msg.sender === "user" ? "user-message" : "ai-message"}>
-                        <strong>{msg.sender === "user" ? "You" : "AI"}:</strong> {msg.text}
+                        {msg.text}
                     </div>
                 ))}
             </div>
