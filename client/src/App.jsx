@@ -51,6 +51,7 @@ function App() {
       </div>
       {isAddWindowOpen && <AddCourseWindow onClose={closeAddWindow} onAddCourse={addCourse} />}
       {isChatroomOpen && <Chatroom onClose={closeChatroomw} topic={selectedTopic} />}
+
       <div id="AppFooter">
         <img id="startImg" src={Start} alt="Start"></img>
         
