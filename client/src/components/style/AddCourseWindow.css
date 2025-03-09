@@ -11,10 +11,81 @@
 }
 
 .AddCourseWindow{
-    background-color: #fff;
-    padding: 20px;
-    width: 350px;
+    background-color: #C0C0C0;
+    display: flex;
+    flex-direction: column;
+    width: 496px;
+    height: 198px;
     text-align: center;
     height: 50%;
+    border-style: solid;
+    border-width: 3px;
+    border-left-color: white;
+    border-right-color: black;
+    border-top-color: white;
+    border-bottom-color: black;
+    padding: 3px;
 }
 
+.CourseWindowHeadline{
+    background-color: #FF7AAA;
+    display: flex;
+    align-items: center;
+    height: 39px;
+    padding: 0px;
+    margin: 0px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: black;
+    padding-left: 5px;
+    padding-right: 5px;
+    justify-content: space-between;
+}
+
+.CourseAndLogo {
+    display: flex;
+    flex-direction: row;
+    height: fill;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
+}
+
+.CourseCreationForm {
+    height: 100%;
+    width: auto;
+    background-color: white;
+    margin-top: 3px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: black;
+    display: flex;
+    flex-direction: column;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 75px;
+    align-items: center;
+    gap: 20px;
+}
+
+.TopicTitleField {
+    width: 308px;
+    height: 27px;
+    font-family: 'Pixelify Sans', sans-serif;
+    border-style: solid;
+    border-radius: 0px;
+    border-width: 3px;
+    background-color:whitesmoke;
+    border-left-color: #FFC8DD;
+    border-top-color: #FFC8DD;
+    border-right-color: #FF7AAA;
+    border-bottom-color: #FF7AAA;
+}
+
+.TopicTitleField:focus {
+    outline: none;
+    border-left-color: #FF1493;
+    border-top-color: #FF1493;
+    border-right-color: #FF69B4;
+    border-bottom-color: #FF69B4;
+}
