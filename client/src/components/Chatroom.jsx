@@ -8,7 +8,6 @@ import { GoogleGenerativeAI } from "@google/generative-ai"; // Keep the Google G
 import pdfToText from 'react-pdftotext'
 
 
-
 function Chatroom({ onClose, topic }) {
     const [userMessage, setUserMessage] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
@@ -68,7 +67,7 @@ function Chatroom({ onClose, topic }) {
             ]);
 
         } catch (error) {
-            console.error("Error communicating with AI", error);
+            console.error("Error communicating with Gigi", error);
         } finally {
             setIsLoading(false);
         }
@@ -108,7 +107,7 @@ function Chatroom({ onClose, topic }) {
             <div className="messages">
                 {chatHistory.map((msg, index) => (
                     <div key={index} className={msg.sender === "user" ? "user-message" : "ai-message"}>
-                        <strong>{msg.sender === "user" ? "You" : "AI"}:</strong> {msg.text}
+                        {msg.text}
                     </div>
                 ))}
             </div>
