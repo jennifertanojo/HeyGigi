@@ -69,6 +69,7 @@
     border-top-color: #FFC8DD;
     border-right-color: #FF7AAA;
     border-bottom-color: #FF7AAA;
+    resize: none;
 }
 
 .UserMessage:focus {

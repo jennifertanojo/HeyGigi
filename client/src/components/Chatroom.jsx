@@ -32,6 +32,25 @@ function Chatroom({ onClose, topic }) {
     systemInstruction:
       "Your name is Gigi. You should explain stuff like you're my best friend and we're gossiping.",
   });
+  const handleInterrupt = async () => {
+    startListening();
+
+    const response = await axios.post('http://localhost:8080/tts', {
+        "": text,
+    });
+    // setChatHistory((prevMessages) => [
+    //     ...prevMessages,
+    //     {
+    //         sender: "bot",
+    //         text: "Starting a call...",
+    //         options: []
+    //     }
+    // ]);
+    setAudioSrc(null);
+    const audioSrc = `data:audio/mp3;base64,${response.data.audioContent}`;
+    setAudioSrc(audioSrc);
+
+  }
 
   // Speech-to-Text Function
   const startListening = () => {
@@ -67,7 +86,6 @@ function Chatroom({ onClose, topic }) {
     };
 
     const handleSynthesize = async () => {
-        setIsCallingGigi((prev) => !prev);
 
         const response = await axios.post('http://localhost:8080/tts', {
             "text": text,
@@ -82,6 +100,7 @@ function Chatroom({ onClose, topic }) {
         ]);
         const audioSrc = `data:audio/mp3;base64,${response.data.audioContent}`;
         setAudioSrc(audioSrc);
+        setIsCallingGigi((prev) => !prev);
     };
 
   const callGigi = () => {
@@ -89,6 +108,8 @@ function Chatroom({ onClose, topic }) {
   };
 
   const sendMessage = async (message = userMessage) => {
+    setIsLoading(true);
+
     if (!message.trim()) return;
 
     let contentToSend = chatHistory
@@ -100,7 +121,6 @@ function Chatroom({ onClose, topic }) {
     const newMessages = [...chatHistory, { sender: "user", text: message }];
     setChatHistory(newMessages);
     setUserMessage("");
-    setIsLoading(true);
 
    try {
             let fileResponseText = "";
@@ -139,42 +159,6 @@ function Chatroom({ onClose, topic }) {
     }
   };
   
-   const handleOptionClick = (option) => {
-        if (option === "Start a call") {
-            startVoiceCall();
-        } else if (option === "Continue chatting") {
-            continueChatting();
-        }
-    };
-
-    const startVoiceCall = () => {
-        setIsVoiceCall(true);
-        setChatHistory([
-            ...chatHistory,
-            { sender: "bot", text: "Starting voice chat..." }
-        ]);
-
-        const speech = new SpeechSynthesisUtterance("Let's start the call!");
-        speech.lang = "en-US";
-        window.speechSynthesis.speak(speech);
-
-        setChatHistory(prevMessages => [
-            ...prevMessages,
-            {
-                sender: "bot",
-                text: "The call has started, let's chat!",
-                options: ["Starting a call"]
-            }
-        ]);
-    };
-
-    const continueChatting = () => {
-        setIsVoiceCall(false);
-        setChatHistory([
-            ...chatHistory,
-            { sender: "bot", text: "Okay, let's continue chatting!" }
-        ]);
-    };
 
   return (
     <div className="Chatroom">
@@ -183,19 +167,17 @@ function Chatroom({ onClose, topic }) {
           <div className="CallArea">
             <img src={GigiCall} alt="Calling Gigi" />
             <div className="CallButtons">
-              <button style={{ fontSize: "18px" }} onClick={startListening}>Interrupt</button>
+              <button style={{ fontSize: "18px" }} onClick={handleInterrupt}>Interrupt</button>
               <button
                 style={{
                   fontSize: "18px",
                   backgroundColor: "#FF7AAA",
                   color: "white",
                 }}
-                onClick={handleSynthesize}
-              >
+                onClick={callGigi}>
                 Hang Up
               </button>
               {audioSrc && <audio autoplay controls src={audioSrc} />}
-
             </div>
           </div>
         ) : (
@@ -215,7 +197,7 @@ function Chatroom({ onClose, topic }) {
               <img
                 src={Phone}
                 alt="Call Gigi"
-                onClick={callGigi}
+                onClick={handleSynthesize}
             
                 style={{
                   cursor: "pointer",

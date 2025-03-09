@@ -55,7 +55,7 @@ app.post("/tts", async (req, res) => {
 			"small-bluetooth-speaker-class-device"
 		  ],
 		  "pitch": 0,
-		  "speakingRate": 1
+		  "speakingRate": 1.1
 		},
 		"input": {
 		  "text": text
