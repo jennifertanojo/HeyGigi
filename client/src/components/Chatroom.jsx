@@ -6,6 +6,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai"; // Keep the Google G
 // import pdfParse from "pdf-parse";
 // import { PDFDocument } from "pdf-lib";
 import pdfToText from 'react-pdftotext'
+import ReactMarkdown from "react-markdown";
 
 
 function Chatroom({ onClose, topic }) {
@@ -107,7 +108,7 @@ function Chatroom({ onClose, topic }) {
             <div className="messages">
                 {chatHistory.map((msg, index) => (
                     <div key={index} className={msg.sender === "user" ? "user-message" : "ai-message"}>
-                        {msg.text}
+                        <ReactMarkdown>{msg.text}</ReactMarkdown>
                     </div>
                 ))}
             </div>
