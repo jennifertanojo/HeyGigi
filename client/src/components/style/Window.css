@@ -38,8 +38,6 @@
     border-style: solid;
     border-color: black;
     display: flex;
-    padding-left: 50px;
-    padding-right: 50px;
     align-items: center;
     gap: 20px;
     justify-content: center;

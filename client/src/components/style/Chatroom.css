@@ -55,3 +55,48 @@
     display: inline-block;
     margin-right: auto;
 }
+
+.UserMessage {
+    height: 40px;
+    width: 100%;
+    font-family: 'Pixelify Sans', sans-serif;
+    border-style: solid;
+    border-radius: 0px;
+    border-width: 3px;
+    background-color:whitesmoke;
+    border-left-color: #FFC8DD;
+    border-top-color: #FFC8DD;
+    border-right-color: #FF7AAA;
+    border-bottom-color: #FF7AAA;
+}
+
+.UserMessage:focus {
+    outline: none;
+    border-left-color: #FF1493;
+    border-top-color: #FF1493;
+    border-right-color: #FF69B4;
+    border-bottom-color: #FF69B4;
+}
+
+.MessageBar {
+    display: flex;
+    align-items: center;
+    background-color: whitesmoke;
+    width: auto;
+    height: 47px;
+    padding: 5px;
+    border-top-color: black;
+    border-style: solid;
+}
+
+.ChatroomArea {
+    display: flex;
+flex-direction: column;
+height: 100%;
+width: 100%;
+}
+
+.messages {
+    width: 100%;
+    height: 100%;
+}

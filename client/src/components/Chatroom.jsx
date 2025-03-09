@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "./style/Chatroom.css";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Window from "./Window";
+import Send from "../images/Send.png";
+import File from "../images/File.png";
 
 function Chatroom({ onClose, topic }) {
   const [userMessage, setUserMessage] = useState("");
@@ -28,7 +30,7 @@ function Chatroom({ onClose, topic }) {
       const result = await model.generateContent(userMessage);
       const response = await result.response;
       console.log(response.text());
-      
+
       setChatHistory([
         ...newMessages,
         { sender: "bot", text: response.text() },
@@ -43,29 +45,50 @@ function Chatroom({ onClose, topic }) {
   return (
     <div className="Chatroom">
       <Window onClose={onClose} HeaderTitle={topic.name}>
-        <button type="button" onClick={onClose}>
-          X
-        </button>
+        <div className="ChatroomArea">
+          <div className="messages">
+            {chatHistory.map((msg, index) => (
+              <div
+                key={index}
+                className={
+                  msg.sender === "user" ? "user-message" : "ai-message"
+                }
+              >
+                {msg.text}
+              </div>
+            ))}
+          </div>
 
-        <div className="messages">
-          {chatHistory.map((msg, index) => (
-            <div
-              key={index}
-              className={msg.sender === "user" ? "user-message" : "ai-message"}
-            >
-              {msg.text}
-            </div>
-          ))}
+          <div className="MessageBar">
+            <textarea
+              className="UserMessage"
+              value={userMessage}
+              onChange={(e) => setUserMessage(e.target.value)}
+              placeholder="Type a message..."
+            />
+
+            <img
+              src={File}
+              alt="Upload File"
+              //   onClick={sendMessage}
+              style={{
+                cursor: isLoading ? "Sending..." : "Send",
+                height: "50px",
+              }}
+              disabled={isLoading}
+            />
+            <img
+              src={Send}
+              alt="Send"
+              onClick={sendMessage}
+              style={{
+                cursor: isLoading ? "Sending..." : "Send",
+                height: "30px",
+              }}
+              disabled={isLoading}
+            />
+          </div>
         </div>
-
-        <textarea
-          value={userMessage}
-          onChange={(e) => setUserMessage(e.target.value)}
-          placeholder="Type a message..."
-        />
-        <button onClick={sendMessage} disabled={isLoading}>
-          {isLoading ? "Sending..." : "Send"}
-        </button>
       </Window>
     </div>
   );
