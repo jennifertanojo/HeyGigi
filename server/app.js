@@ -42,6 +42,7 @@ app.use("/", testRoutes);
 app.post("/tts", async (req, res) => {
 	try {
 		const text = JSON.stringify(req.body);
+		// console.log(text);
 		if (text.length == 0) {
 			res.sendStatus(400);
 		}

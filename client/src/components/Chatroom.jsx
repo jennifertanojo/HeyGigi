@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import "./style/Chatroom.css";
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
@@ -14,107 +14,101 @@ import NOKIA from "../images/NOKIa.mp3";
 import axios from "axios";
 
 function Chatroom({ onClose, topic }) {
-  const [userMessage, setUserMessage] = useState("");
-  const [chatHistory, setChatHistory] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [fileText, setFileText] = useState("");
-  const [isCallingGigi, setIsCallingGigi] = useState(false);
-  const [text, setText] = useState("");
-  const [audioSrc, setAudioSrc] = useState(null);
+    const [userMessage, setUserMessage] = useState("");
+    const [chatHistory, setChatHistory] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [fileText, setFileText] = useState("");
+    const [isCallingGigi, setIsCallingGigi] = useState(false);
+    const [text, setText] = useState("");
+    const audioRef = useRef(null);
+    const [audioSrc, setAudioSrc] = useState(null);
+
+    const genAI = new GoogleGenerativeAI(process.env.REACT_APP_API_KEY);
+    const model = genAI.getGenerativeModel({
+        model: "gemini-2.0-flash",
+        systemInstruction:
+        "Your name is Gigi. You should explain stuff like you're my best friend and we're gossiping.  Don't add anything that makes it seem like a script",
+    });
+
   const [isCalling, setIsCalling] = useState(false);
   const [isVoiceCall, setIsVoiceCall] = useState(false);
 
-  const genAI = new GoogleGenerativeAI(process.env.REACT_APP_API_KEY);
-  const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
-    systemInstruction:
-      "Your name is Gigi. You should explain stuff like you're my best friend and we're gossiping.",
-  });
-  const handleInterrupt = async () => {
-    startListening();
+    // Speech-to-Text Function
+    const startListening = async () => {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = "en-US";
+        recognition.continuous = false;
+        recognition.interimResults = false;
 
-    const response = await axios.post("http://localhost:8080/tts", {
-      "": text,
-    });
-    // setChatHistory((prevMessages) => [
-    //     ...prevMessages,
-    //     {
-    //         sender: "bot",
-    //         text: "Starting a call...",
-    //         options: []
-    //     }
-    // ]);
-    setAudioSrc(null);
-    const audioSrc = `data:audio/mp3;base64,${response.data.audioContent}`;
-    setAudioSrc(audioSrc);
-  };
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            console.log(transcript);
+            setUserMessage(transcript);
+            sendMessage(transcript);
+        };
 
-  // Speech-to-Text Function
-  const startListening = () => {
-    const recognition = new (window.SpeechRecognition ||
-      window.webkitSpeechRecognition)();
-    recognition.lang = "en-US";
-    recognition.continuous = false;
-    recognition.interimResults = false;
+        recognition.onerror = (event) => {
+            console.error("Speech recognition error:", event.error);
+        };
 
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
-      console.log("Recognized Speech:", transcript);
-      setUserMessage(transcript);
-      sendMessage(transcript); // Automatically send message after speech
+
+        recognition.start();
+
+        // while (!audioRecorded) {
+        // }
     };
 
-    recognition.onerror = (event) => {
-      console.error("Speech recognition error:", event.error);
-    };
+    const interruptListening = () => {
+        const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.lang = "en-US";
+        recognition.continuous = false;
+        recognition.interimResults = false;
 
-    recognition.start();
-  };
+        recognition.onresult = async (event) => {
+            console.log("recording result received", event);
+            const transcript = event.results[0][0].transcript;
+            setUserMessage(transcript);
+            await sendMessage(transcript);
+        };
 
-  const handleFileChange = (e) => {
-    console.log("IM HERE!!!");
-    const file = e.target.files[0];
-    setSelectedFile(file);
-    pdfToText(file)
-      .then((text) => {
-        setFileText(text);
-        console.log("fileText: ", fileText);
-      })
-      .catch((error) => console.error("Failed to extract text from pdf"));
-  };
+        recognition.onerror = (event) => {
+            console.error("Speech recognition error:", event.error);
+        };
 
-  const handleSynthesize = async () => {
-    if (!text) {
-      alert("Please enter text before calling.");
-      return;
+        recognition.start();
     }
 
-    try {
-      setIsLoading(true);
-      setIsCallingGigi((prev) => !prev);
-      await new Promise((resolve) => setTimeout(resolve, 0)); // Ensures re-render
+    const handleFileChange = (e) => {
+        console.log("IM HERE!!!");
+        const file = e.target.files[0];
+        setSelectedFile(file);
+        pdfToText(file)
+            .then((text) => {
+                setFileText(text);
+                console.log("fileText: ", fileText);
+            })
+            .catch((error) => console.error("Failed to extract text from pdf"));
+    };
 
-      // Clean up the plain text (optional)
+    const handleSynthesize = async () => {
+        setIsCallingGigi((prev) => !prev);
       const cleanedText = cleanText(text); // If further cleaning is required
 
       const response = await axios.post("http://localhost:8080/tts", { cleanedText });
+     
+        setChatHistory((prevMessages) => [
+            ...prevMessages,
+            {
+                sender: "bot",
+                text: "Starting a call...",
+                options: []
+            }
+        ]);
+        const audioSrc = `data:audio/mp3;base64,${response.data.audioContent}`;
+        setAudioSrc(audioSrc);
+    };
 
-      setChatHistory((prevMessages) => [
-        ...prevMessages,
-        { sender: "bot", text: "Starting a call...", options: [] },
-      ]);
-
-      const audioSrc = `data:audio/mp3;base64,${response.data.audioContent}`;
-      setAudioSrc(audioSrc);
-    } catch (error) {
-      console.error("Error fetching TTS:", error);
-      alert("Failed to start call. Try again.");
-    } finally {
-      setIsLoading(false);
-      setIsCalling(false);
-    }
-  };
 
   // Helper function to clean up the text (if needed)
   const cleanText = (text) => {
@@ -156,36 +150,48 @@ function Chatroom({ onClose, topic }) {
     setChatHistory(newMessages);
     setUserMessage("");
 
-    try {
-      let fileResponseText = "";
+   try {
+            if (selectedFile) {
+                contentToSend += `\n\nFile Content: ${fileText}`;
+                // setSelectedFile(null);
+            }
 
-      if (selectedFile) {
-        contentToSend += `\n\nFile Content: ${fileText}`;
-        // setSelectedFile(null);
-      }
+            const result = await model.generateContent(message);
+            const response = result.response;
+            const ttsResult = response.text();
 
-      console.log("File: ", selectedFile);
-      console.log("File text: ", fileText);
+            console.log(ttsResult);
 
-      console.log("Content to send: ", contentToSend);
-      const result = await model.generateContent(contentToSend);
-      const response = await result.response;
-      console.log(response.text());
-      setText(response.text());
+            setText(ttsResult);
 
-      setChatHistory([
-        ...newMessages,
-        { sender: "bot", text: response.text() },
-      ]);
+            const ttsResponse = await axios.post('http://localhost:8080/tts', {
+                "text": ttsResult,
+            });
+            console.log(ttsResult);
+            setAudioSrc(null); 
+            console.log(ttsResponse.data);
+            const newAudioSrc = `data:audio/mp3;base64,${ttsResponse.data.audioContent}`;
+            setAudioSrc(newAudioSrc);
+            if(audioRef.current){
+            audioRef.pause();
+            audioRef.load();
+            audioRef.play();
+            }
 
-      setChatHistory((prevMessages) => [
-        ...prevMessages,
-        {
-          sender: "bot",
-          text: "Would you like to continue chatting or start a call?",
-          options: ["Continue chatting", "Start a call"],
-        },
-      ]);
+            setChatHistory([
+                ...newMessages,
+                { sender: "bot", text: response.text() },
+            ]);
+
+            setChatHistory((prevMessages) => [
+                ...prevMessages,
+                {
+                    sender: "bot",
+                    text: "Would you like to continue chatting or start a call?",
+                    options: ["Continue chatting", "Start a call"]
+                }
+            ]);
+
     } catch (error) {
       console.error("Error communicating with Gigi", error);
     } finally {
@@ -197,6 +203,7 @@ function Chatroom({ onClose, topic }) {
     <div className="Chatroom">
       <Window onClose={onClose} HeaderTitle={topic.name}>
         {isCallingGigi ? (
+
           isCalling || !audioSrc ? ( // Show loading if fetching audio
             <div className="LoadingPage">
               <img src={GigiCall}></img>
