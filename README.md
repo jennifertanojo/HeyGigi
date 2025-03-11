@@ -2,7 +2,7 @@
 
 Welcome to **Hey Gigi!**, the web app designed to help you study and understand difficult concepts in a fun, engaging, and supportive way! We understand that studying can be tough, especially when you're juggling attention span challenges or struggling to focus. That’s why we’ve built this app with a unique twist: learning like you’re gossiping with friends!
 
-Hey Gigi! uses the Google Gemini API for intelligent study assistance and Google Cloud Text-to-Speech (TTS) to simulate a voice call experience. The front end is built with React.js, while the back end is powered by MongoDB.
+Hey Gigi! uses the **Google Gemini API** for intelligent study assistance and **Google Cloud Text-to-Speech (TTS)** to simulate a voice call experience. The front end is built with React.js, while the back end is powered by MongoDB.
 
 ## The Problem
 - **Difficulty staying focused**: Many students struggle to stay attentive due to short attention spans, ADHD, or the overwhelming nature of traditional study methods.
