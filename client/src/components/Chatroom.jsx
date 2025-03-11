@@ -16,7 +16,6 @@ import axios from "axios";
 function Chatroom({ onClose, topic }) {
     const [userMessage, setUserMessage] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
-    // const [isLoading, setIsLoading] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [fileText, setFileText] = useState("");
     const [isCallingGigi, setIsCallingGigi] = useState(false);
@@ -32,7 +31,6 @@ function Chatroom({ onClose, topic }) {
     });
 
   const [isCalling, setIsCalling] = useState(false);
-//   const [isVoiceCall, setIsVoiceCall] = useState(false);
 
     // Speech-to-Text Function
     const startListening = async () => {
@@ -53,9 +51,6 @@ function Chatroom({ onClose, topic }) {
         };
 
         recognition.start();
-
-        // while (!audioRecorded) {
-        // }
     };
 
     const handleInterrupt = () => {
@@ -85,16 +80,13 @@ function Chatroom({ onClose, topic }) {
         pdfToText(file)
             .then((text) => {
                 setFileText(text);
-                // console.log("fileText: ", fileText);
             })
             .catch((error) => console.error("Failed to extract text from pdf"));
     };
 
     const handleSynthesize = async () => {
         setIsCallingGigi((prev) => !prev);
-        // await new Promise((resolve) => setTimeout(resolve,0));
         const cleanedText = cleanText(text); // If further cleaning is required
-
         const response = await axios.post("http://localhost:8080/tts", { cleanedText }); // tts
         
         setChatHistory((prevMessages) => [
@@ -109,7 +101,6 @@ function Chatroom({ onClose, topic }) {
         setAudioSrc(audioSrc);
 
         setIsCalling(false);
-
     };
 
 
@@ -139,8 +130,6 @@ function Chatroom({ onClose, topic }) {
   };
 
   const sendMessage = async (message = userMessage) => {
-    // setIsLoading(true);
-
     if (!message.trim()) return;
 
     let contentToSend = chatHistory
@@ -158,13 +147,10 @@ function Chatroom({ onClose, topic }) {
             if (selectedFile) {
                 contentToSend += `\n\nFile Content: ${fileText}`;
                 result = await model.generateContent(contentToSend);
-
-                // setSelectedFile(null);
             } else {
                 result = await model.generateContent(message);
             }
 
-            // result = await model.generateContent(message);
             const response = result.response;
             const ttsResult = response.text();
 
@@ -201,9 +187,7 @@ function Chatroom({ onClose, topic }) {
 
     } catch (error) {
       console.error("Error communicating with Gigi", error);
-    } finally {
-    //   setIsLoading(false);
-    }
+    } 
   };
 
   return (
@@ -264,7 +248,6 @@ function Chatroom({ onClose, topic }) {
                   cursor: "pointer",
                   height: "50px",
                 }}
-                // disabled={isLoading}
               />
               <textarea
                 className="UserMessage"
@@ -305,7 +288,6 @@ function Chatroom({ onClose, topic }) {
                   cursor: "pointer",
                   height: "30px",
                 }}
-                // disabled={isLoading}
               />
             </div>
           </div>
