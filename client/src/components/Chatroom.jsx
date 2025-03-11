@@ -16,7 +16,7 @@ import axios from "axios";
 function Chatroom({ onClose, topic }) {
     const [userMessage, setUserMessage] = useState("");
     const [chatHistory, setChatHistory] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
+    // const [isLoading, setIsLoading] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
     const [fileText, setFileText] = useState("");
     const [isCallingGigi, setIsCallingGigi] = useState(false);
@@ -52,7 +52,6 @@ function Chatroom({ onClose, topic }) {
             console.error("Speech recognition error:", event.error);
         };
 
-
         recognition.start();
 
         // while (!audioRecorded) {
@@ -86,17 +85,18 @@ function Chatroom({ onClose, topic }) {
         pdfToText(file)
             .then((text) => {
                 setFileText(text);
-                console.log("fileText: ", fileText);
+                // console.log("fileText: ", fileText);
             })
             .catch((error) => console.error("Failed to extract text from pdf"));
     };
 
     const handleSynthesize = async () => {
         setIsCallingGigi((prev) => !prev);
-      const cleanedText = cleanText(text); // If further cleaning is required
+        // await new Promise((resolve) => setTimeout(resolve,0));
+        const cleanedText = cleanText(text); // If further cleaning is required
 
-      const response = await axios.post("http://localhost:8080/tts", { cleanedText });
-     
+        const response = await axios.post("http://localhost:8080/tts", { cleanedText }); // tts
+        
         setChatHistory((prevMessages) => [
             ...prevMessages,
             {
@@ -139,7 +139,7 @@ function Chatroom({ onClose, topic }) {
   };
 
   const sendMessage = async (message = userMessage) => {
-    setIsLoading(true);
+    // setIsLoading(true);
 
     if (!message.trim()) return;
 
@@ -168,8 +168,6 @@ function Chatroom({ onClose, topic }) {
             const response = result.response;
             const ttsResult = response.text();
 
-            console.log(ttsResult);
-
             setText(ttsResult);
 
             const ttsResponse = await axios.post('http://localhost:8080/tts', {
@@ -180,15 +178,16 @@ function Chatroom({ onClose, topic }) {
             console.log(ttsResponse.data);
             const newAudioSrc = `data:audio/mp3;base64,${ttsResponse.data.audioContent}`;
             setAudioSrc(newAudioSrc);
+
             if(audioRef.current){
-            audioRef.pause();
-            audioRef.load();
-            audioRef.play();
+                audioRef.pause();
+                audioRef.load();
+                audioRef.play();
             }
 
             setChatHistory([
                 ...newMessages,
-                { sender: "bot", text: response.text() },
+                { sender: "bot", text: ttsResult },
             ]);
 
             setChatHistory((prevMessages) => [
@@ -203,7 +202,7 @@ function Chatroom({ onClose, topic }) {
     } catch (error) {
       console.error("Error communicating with Gigi", error);
     } finally {
-      setIsLoading(false);
+    //   setIsLoading(false);
     }
   };
 
@@ -265,7 +264,7 @@ function Chatroom({ onClose, topic }) {
                   cursor: "pointer",
                   height: "50px",
                 }}
-                disabled={isLoading}
+                // disabled={isLoading}
               />
               <textarea
                 className="UserMessage"
@@ -306,7 +305,7 @@ function Chatroom({ onClose, topic }) {
                   cursor: "pointer",
                   height: "30px",
                 }}
-                disabled={isLoading}
+                // disabled={isLoading}
               />
             </div>
           </div>
